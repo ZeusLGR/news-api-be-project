@@ -1,13 +1,12 @@
-const { selectTopics } = require("./models");
+const { selectTopics } = require("../models/models");
 
 exports.checkAPI = (req, res) => {
-    res.status(200).send({ message: "all ok" });
-  };
+  res.status(200).send({ msg: "all ok" });
+};
 
 exports.getTopics = (req, res, next) => {
   selectTopics()
     .then((topics) => {
-      console.log(topics);
       return res.status(200).send({ topics });
     })
     .catch((err) => {
