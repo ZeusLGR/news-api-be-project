@@ -16,7 +16,7 @@ describe("GET /api", () => {
       .get(`/api`)
       .expect(200)
       .then((response) => {
-        expect(response.body).toMatchObject({ message: "all ok" });
+        expect(response.body).toMatchObject({ msg: "all ok" });
       });
   });
 });
