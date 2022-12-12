@@ -2,7 +2,7 @@ const express = require("express");
 const { checkAPI, getTopics, getArticles } = require("./controllers/controllers");
 const {
   routeNotFound,
-  internalServerError,
+  handleServerErrors,
 } = require("./controllers/errors.controllers");
 
 const app = express();
@@ -13,6 +13,6 @@ app.get("/api/articles", getArticles)
 
 app.all("*", routeNotFound);
 
-app.use(internalServerError);
+app.use(handleServerErrors);
 
 module.exports = app;
