@@ -1,8 +1,12 @@
 const express = require("express");
-const { getTopics } = require("./controllers");
+const { checkAPI, getTopics } = require("./controllers");
+const { routeNotFound } = require("./errors.controllers");
 
 const app = express();
 
+app.get("/api", checkAPI);
 app.get("/api/topics", getTopics);
+
+app.all("*", routeNotFound);
 
 module.exports = app;
