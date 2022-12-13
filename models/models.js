@@ -9,3 +9,17 @@ exports.selectTopics = () => {
     return rows;
   });
 };
+
+exports.selectArticles = () => {
+  let SQL = `
+  SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, COUNT(*) AS comment_count
+  FROM articles
+  LEFT OUTER JOIN comments 
+  ON comments.article_id = articles.article_id
+  GROUP BY articles.article_id
+  ORDER BY articles.created_at DESC`;
+
+  return db.query(SQL).then(({ rows }) => {
+    return rows;
+  });
+};

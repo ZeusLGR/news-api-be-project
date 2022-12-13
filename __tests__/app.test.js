@@ -40,9 +40,44 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  test("status:400, responds with an error message if the route does not exist", () => {
+  test("status:404, responds with an error message if the route does not exist", () => {
     return request(app)
       .get("/api/tooopics")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Route not found");
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("status:200, responds with an array of article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+            })
+          );
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+      });
+  });
+  test("status:404, responds with an error message if the route does not exist", () => {
+    return request(app)
+      .get("/api/notARoute")
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Route not found");

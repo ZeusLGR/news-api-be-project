@@ -1,17 +1,18 @@
 const express = require("express");
-const { checkAPI, getTopics } = require("./controllers/controllers");
+const { checkAPI, getTopics, getArticles } = require("./controllers/controllers");
 const {
   routeNotFound,
-  internalServerError,
+  handleServerErrors,
 } = require("./controllers/errors.controllers");
 
 const app = express();
 
 app.get("/api", checkAPI);
 app.get("/api/topics", getTopics);
+app.get("/api/articles", getArticles)
 
 app.all("*", routeNotFound);
 
-app.use(internalServerError);
+app.use(handleServerErrors);
 
 module.exports = app;
