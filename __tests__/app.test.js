@@ -94,7 +94,7 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test.only("status: 200, responds with an article object", () => {
+  test("status: 200, responds with an article object", () => {
     return request(app)
       .get("/api/articles/2")
       .expect(200)
@@ -112,12 +112,21 @@ describe("GET /api/articles/:article_id", () => {
         );
       });
   });
-  test.todo(
-    "status:404, responds with an error message if the route does not exist"
-  );
-  test.todo(
-    "status:404, responds with an error message if the article_id is valid but does not exist in the db"
-  );
+  test("status:404, responds with an error message if the route does not exist", () => {
+    return request(app)
+      .get("/api/notARoute/2")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Route not found");
+      });
+  });
+  test("status:404, responds with an error message if the article_id is valid but does not exist in the db", () => {
+    return request(app)
+      .get("/api/articles/73")
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("No article found for article_id: 73");
+      });
+  });
   test.todo(
     "status:400, responds with an error message if the article_id is not valid"
   );
