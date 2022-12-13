@@ -123,11 +123,17 @@ describe("GET /api/articles/:article_id", () => {
   test("status:404, responds with an error message if the article_id is valid but does not exist in the db", () => {
     return request(app)
       .get("/api/articles/73")
+      .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("No article found for article_id: 73");
       });
   });
-  test.todo(
-    "status:400, responds with an error message if the article_id is not valid"
-  );
+  test("status:400, responds with an error message if the article_id is not valid", () => {
+    return request(app)
+      .get("/api/articles/notAnID")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
 });

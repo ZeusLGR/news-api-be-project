@@ -8,7 +8,8 @@ const {
 const {
   routeNotFound,
   handleServerErrors,
-  handleCustomErrors
+  handleCustomErrors,
+  handlePsqlErrors
 } = require("./controllers/errors.controllers");
 
 const app = express();
@@ -19,6 +20,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);
 
 app.use(handleCustomErrors);
+app.use(handlePsqlErrors);
 
 app.all("*", routeNotFound);
 
