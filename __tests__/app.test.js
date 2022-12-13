@@ -71,8 +71,16 @@ describe("GET /api/articles", () => {
               comment_count: expect.any(String),
             })
           );
-          expect(articles).toBeSortedBy("created_at", { descending: true });
         });
+      });
+  });
+  test("status:200, articles array should be sorted by the created_at property, in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
   test("status:404, responds with an error message if the route does not exist", () => {
