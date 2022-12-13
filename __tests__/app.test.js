@@ -169,16 +169,38 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments).toBeSortedBy("created_at", { ascending: true });
       });
   });
-  test.todo(
-    "status:200, responds with an empty array with the article_id exists in the db but there are no comments related to it"
-  );
-  test.todo(
-    "status:404, responds with an error message if the route does not exist"
-  );
-  test.todo(
-    "status:404, responds with an error message if the article_id is valid but does not exist in the db"
-  );
-  test.todo(
-    "status:400, responds with an error message if the article_i is not valid"
-  );
+  test("status:200, responds with an empty array if the article_id exists in the db but there are no comments related to it", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
+      });
+  });
+  test("status:404, responds with an error message if the route does not exist", () => {
+    return request(app)
+      .get("/api/notARoute/1/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Route not found");
+      });
+  });
+  test("status:404, responds with an error message if the article_id is valid but does not exist in the db", () => {
+    return request(app)
+      .get("/api/articles/99/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Nothing found for article_id 99");
+      });
+  });
+  test("status:400, responds with an error message if the article_id is not valid", () => {
+    return request(app)
+      .get("/api/articles/notAnID/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
 });
