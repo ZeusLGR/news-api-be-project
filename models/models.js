@@ -16,7 +16,8 @@ exports.selectArticles = () => {
   FROM articles
   LEFT OUTER JOIN comments 
   ON comments.article_id = articles.article_id
-  GROUP BY articles.article_id`;
+  GROUP BY articles.article_id
+  ORDER BY articles.created_at DESC`;
 
   return db.query(SQL).then(({ rows }) => {
     return rows;

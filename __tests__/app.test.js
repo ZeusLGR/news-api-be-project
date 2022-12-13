@@ -40,7 +40,7 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  test("status:400, responds with an error message if the route does not exist", () => {
+  test("status:404, responds with an error message if the route does not exist", () => {
     return request(app)
       .get("/api/tooopics")
       .expect(404)
@@ -71,9 +71,16 @@ describe("GET /api/articles", () => {
               comment_count: expect.any(String),
             })
           );
+          expect(articles).toBeSortedBy("created_at", { descending: true });
         });
       });
   });
+  test("status:404, responds with an error message if the route does not exist", () => {
+    return request(app)
+      .get("/api/notARoute")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Route not found");
+      });
+  });
 });
-
-//the articles should be sorted by date in descending order.
