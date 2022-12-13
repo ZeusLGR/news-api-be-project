@@ -92,3 +92,48 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id", () => {
+  test("status: 200, responds with an article object", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            body: expect.any(String),
+          })
+        );
+      });
+  });
+  test("status:404, responds with an error message if the route does not exist", () => {
+    return request(app)
+      .get("/api/notARoute/2")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Route not found");
+      });
+  });
+  test("status:404, responds with an error message if the article_id is valid but does not exist in the db", () => {
+    return request(app)
+      .get("/api/articles/73")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("No article found for article_id: 73");
+      });
+  });
+  test("status:400, responds with an error message if the article_id is not valid", () => {
+    return request(app)
+      .get("/api/articles/notAnID")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
