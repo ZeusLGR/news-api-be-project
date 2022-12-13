@@ -92,3 +92,33 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id", () => {
+  test.only("status: 200, responds with an article object", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            body: expect.any(String),
+          })
+        );
+      });
+  });
+  test.todo(
+    "status:404, responds with an error message if the route does not exist"
+  );
+  test.todo(
+    "status:404, responds with an error message if the article_id is valid but does not exist in the db"
+  );
+  test.todo(
+    "status:400, responds with an error message if the article_id is not valid"
+  );
+});

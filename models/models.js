@@ -23,3 +23,14 @@ exports.selectArticles = () => {
     return rows;
   });
 };
+
+exports.selectArticleByID = (article_id) => {
+  let SQL = `
+    SELECT * 
+    FROM articles
+    WHERE article_id = $1;`;
+
+  return db.query(SQL, [article_id]).then(({ rows }) => {
+    return rows[0];
+  });
+};
