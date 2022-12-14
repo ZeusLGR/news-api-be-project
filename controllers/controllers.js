@@ -2,6 +2,8 @@ const {
   selectTopics,
   selectArticles,
   selectArticleByID,
+  selectCommentsByArticleID,
+  checkIfArticleIDExists,
 } = require("../models/models");
 
 exports.checkAPI = (req, res) => {
@@ -34,6 +36,21 @@ exports.getArticleByID = (req, res, next) => {
   selectArticleByID(article_id)
     .then((article) => {
       return res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getCommentsByArticleID = (req, res, next) => {
+  const { article_id } = req.params;
+  const promises = [
+    selectCommentsByArticleID(article_id),
+    checkIfArticleIDExists(article_id),
+  ];
+  Promise.all(promises)
+    .then(([comments]) => {
+      return res.status(200).send({ comments });
     })
     .catch((err) => {
       next(err);
