@@ -21,6 +21,17 @@ describe("GET /api", () => {
   });
 });
 
+describe("GET /api/notARoute", () => {
+  test("status:404, responds with an error message if the route does not exist", () => {
+    return request(app)
+      .get("/api/notARoute")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Route not found");
+      });
+  });
+});
+
 describe("GET /api/topics", () => {
   test("status:200, responds with an array of topic objects", () => {
     return request(app)
@@ -38,14 +49,6 @@ describe("GET /api/topics", () => {
             })
           );
         });
-      });
-  });
-  test("status:404, responds with an error message if the route does not exist", () => {
-    return request(app)
-      .get("/api/tooopics")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Route not found");
       });
   });
 });
@@ -83,14 +86,6 @@ describe("GET /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test("status:404, responds with an error message if the route does not exist", () => {
-    return request(app)
-      .get("/api/notARoute")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Route not found");
-      });
-  });
 });
 
 describe("GET /api/articles/:article_id", () => {
@@ -110,14 +105,6 @@ describe("GET /api/articles/:article_id", () => {
             body: expect.any(String),
           })
         );
-      });
-  });
-  test("status:404, responds with an error message if the route does not exist", () => {
-    return request(app)
-      .get("/api/notARoute/2")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Route not found");
       });
   });
   test("status:404, responds with an error message if the article_id is valid but does not exist in the db", () => {
@@ -177,14 +164,6 @@ describe("GET /api/articles/:article_id/comments", () => {
         const { comments } = body;
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(0);
-      });
-  });
-  test("status:404, responds with an error message if the route does not exist", () => {
-    return request(app)
-      .get("/api/notARoute/1/comments")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Route not found");
       });
   });
   test("status:404, responds with an error message if the article_id is valid but does not exist in the db", () => {
