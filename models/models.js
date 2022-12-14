@@ -45,14 +45,11 @@ exports.selectArticleByID = (article_id) => {
 
 exports.selectCommentsByArticleID = (article_id) => {
   let SQL = `
-    SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body
+    SELECT *
     FROM comments
-    JOIN articles
-    ON comments.article_id = articles.article_id
-    WHERE comments.article_id = $1
-    GROUP BY comments.comment_id
-    ORDER BY comments.created_at 
-
+    WHERE article_id = $1
+    GROUP BY comment_id
+    ORDER BY created_at 
   `;
 
   return db.query(SQL, [article_id]).then(({ rows }) => {

@@ -94,14 +94,14 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("status:200, responds with an article object", () => {
+  test("status:200, responds with an article object matching the article_id param", () => {
     return request(app)
       .get("/api/articles/2")
       .expect(200)
       .then(({ body: { article } }) => {
         expect(article).toEqual(
           expect.objectContaining({
-            article_id: expect.any(Number),
+            article_id: 2,
             title: expect.any(String),
             topic: expect.any(String),
             author: expect.any(String),
