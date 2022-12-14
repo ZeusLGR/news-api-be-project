@@ -283,8 +283,48 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
-  test.todo("status:404, valid but non-existent article id");
-  test.todo("status:400, invalid article id");
-  test.todo("status:400, missing key from user input");
-  test.todo("status:400, invalid value on key in user input");
+  test("status:404, valid but non-existent article id", () => {
+    const articleUpdate = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/articles/9000")
+      .send(articleUpdate)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Nothing found for article_id 9000");
+      });
+  });
+  test("status:400, invalid article id", () => {
+    const articleUpdate = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/articles/notAnID")
+      .send(articleUpdate)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+  test("status:400, missing key from user input", () => {
+    const articleUpdate = {};
+
+    return request(app)
+      .patch("/api/articles/3")
+      .send(articleUpdate)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+  test("status:400, invalid value on key in user input", () => {
+    const articleUpdate = { inc_votes: "five" };
+
+    return request(app)
+      .patch("/api/articles/3")
+      .send(articleUpdate)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
 });
