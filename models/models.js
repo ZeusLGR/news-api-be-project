@@ -88,3 +88,20 @@ exports.postCommentModel = (article_id, newComment) => {
     return rows[0];
   });
 };
+
+exports.patchArticleVotesModel = (article_id, articleUpdate) => {
+  const { inc_votes } = articleUpdate;
+
+  const queryValues = [inc_votes, article_id];
+
+  let SQL = `
+  UPDATE articles 
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *;
+  `;
+
+  return db.query(SQL, queryValues).then(({ rows }) => {
+    return rows[0];
+  });
+};

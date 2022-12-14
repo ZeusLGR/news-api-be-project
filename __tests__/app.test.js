@@ -262,3 +262,29 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("status:200, should respond with an object containing the updated article after the votes property is incremented correctly", () => {
+    const articleUpdate = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/articles/3")
+      .send(articleUpdate)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: expect.any(String),
+          votes: 7,
+        });
+      });
+  });
+  test.todo("status:404, valid but non-existent article id");
+  test.todo("status:400, invalid article id");
+  test.todo("status:400, missing key from user input");
+  test.todo("status:400, invalid value on key in user input");
+});
