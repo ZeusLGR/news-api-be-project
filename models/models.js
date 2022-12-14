@@ -74,3 +74,17 @@ exports.checkIfArticleIDExists = (article_id) => {
     }
   });
 };
+
+exports.postCommentModel = (article_id, newComment) => {
+  const { username, body } = newComment;
+  const queryValues = [body, article_id, username];
+
+  let SQL = `
+  INSERT INTO comments (body, article_id, author) 
+  VALUES ($1, $2, $3) 
+  RETURNING *;`;
+
+  return db.query(SQL, queryValues).then(({ rows }) => {
+    return rows[0];
+  });
+};
