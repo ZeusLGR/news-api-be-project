@@ -160,18 +160,19 @@ describe("GET /api/articles", () => {
 describe("GET /api/articles/:article_id", () => {
   test("status:200, responds with an article object matching the article_id param", () => {
     return request(app)
-      .get("/api/articles/2")
+      .get("/api/articles/9")
       .expect(200)
       .then(({ body: { article } }) => {
         expect(article).toEqual(
           expect.objectContaining({
-            article_id: 2,
+            article_id: 9,
             title: expect.any(String),
             topic: expect.any(String),
             author: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
             body: expect.any(String),
+            comment_count: "2",
           })
         );
       });

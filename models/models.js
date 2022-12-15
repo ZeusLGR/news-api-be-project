@@ -52,9 +52,12 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
 
 exports.selectArticleByID = (article_id) => {
   let SQL = `
-    SELECT * 
+    SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.body, COUNT(*) AS comment_count
     FROM articles
-    WHERE article_id = $1;`;
+    LEFT OUTER JOIN comments 
+    ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id;`;
 
   return db.query(SQL, [article_id]).then(({ rows }) => {
     if (rows.length === 0) {
@@ -63,6 +66,7 @@ exports.selectArticleByID = (article_id) => {
         msg: `No article found for article_id: ${article_id}`,
       });
     }
+    console.log(rows[0]);
     return rows[0];
   });
 };
@@ -153,9 +157,9 @@ exports.patchArticleVotesModel = (article_id, articleUpdate) => {
       });
     }
     return rows[0];
-    })
-    }
-    
+  });
+};
+
 exports.selectUsers = () => {
   let SQL = `
   SELECT * 
