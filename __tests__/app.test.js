@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
+const articles = require("../db/data/test-data/articles");
 
 beforeEach(() => seed(testData));
 
@@ -39,7 +40,6 @@ describe("GET /api/topics", () => {
       .expect(200)
       .then(({ body }) => {
         const { topics } = body;
-        expect(topics).toBeInstanceOf(Array);
         expect(topics).toHaveLength(3);
         topics.forEach((topic) => {
           expect(topic).toEqual(
@@ -54,13 +54,12 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("status:200, responds with an array of article objects", () => {
+  test("status:200, responds with an array of all article objects, by default", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        expect(articles).toBeInstanceOf(Array);
         expect(articles).toHaveLength(12);
         articles.forEach((article) => {
           expect(article).toEqual(
@@ -77,13 +76,83 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("status:200, articles array should be sorted by the created_at property, in descending order", () => {
+  test("status:200, articles array should be sorted by the created_at property, in descending order, by default", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
         expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("status:200, should accept a 'topic' query which filters the articles by the value specified", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(11);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: "mitch",
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("status:200, should return an empty array if topic query exists in the db but contains no related articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(0);
+      });
+  });
+  test("status:404, should respond with an error message if the topic query is valid but does not exist in the db", () => {
+    return request(app)
+      .get("/api/articles?topic=lee")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Nothing found for topic: lee");
+      });
+  });
+  test("status:200, should accept a 'sort_by' query which sorts the articles by any valid column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("votes", { descending: true });
+      });
+  });
+  test("status:400. invalid sort_by query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=stars")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+  test("status: 200, should accept an 'order' query which can be set to asc or desc for ascending or descending", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+  test("status:400, invalid order query", () => {
+    return request(app)
+      .get("/api/articles?order=alphabetical")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
       });
   });
 });
@@ -132,7 +201,6 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(200)
       .then(({ body }) => {
         const { comments } = body;
-        expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(2);
         comments.forEach((comment) => {
           expect(comment).toEqual(
