@@ -6,6 +6,7 @@ const {
   getArticleByID,
   getCommentsByArticleID,
   postComment,
+  getUsers,
 } = require("./controllers/controllers");
 const {
   routeNotFound,
@@ -23,6 +24,7 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleID);
+app.get("/api/users", getUsers);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
