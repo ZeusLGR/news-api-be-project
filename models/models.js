@@ -50,6 +50,28 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
   });
 };
 
+exports.checkIfTopicExists = (topic) => {
+  if (topic === undefined) {
+    return true;
+  }
+
+  const SQL = `
+    SELECT *
+    FROM topics
+    WHERE slug = $1;`;
+
+  return db.query(SQL, [topic]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `Nothing found for topic: ${topic}`,
+      });
+    } else {
+      return true;
+    }
+  });
+};
+
 exports.selectArticleByID = (article_id) => {
   let SQL = `
     SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.body, COUNT(*) AS comment_count
@@ -66,7 +88,6 @@ exports.selectArticleByID = (article_id) => {
         msg: `No article found for article_id: ${article_id}`,
       });
     }
-    console.log(rows[0]);
     return rows[0];
   });
 };
@@ -116,26 +137,6 @@ exports.postCommentModel = (article_id, newComment) => {
     return rows[0];
   });
 };
-
-exports.checkIfTopicExists = (topic) => {
-  if (topic === undefined) {
-    return true;
-  }
-
-  const SQL = `
-    SELECT *
-    FROM topics
-    WHERE slug = $1;`;
-
-  return db.query(SQL, [topic]).then(({ rowCount }) => {
-    if (rowCount === 0) {
-      return Promise.reject({
-        status: 404,
-        msg: `Nothing found for topic: ${topic}`,
-      });
-    } else {
-      return true;
-    }
 
 exports.patchArticleVotesModel = (article_id, articleUpdate) => {
   const { inc_votes } = articleUpdate;
