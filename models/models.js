@@ -10,16 +10,42 @@ exports.selectTopics = () => {
   });
 };
 
-exports.selectArticles = () => {
+exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
+  const validSortBy = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const validOrder = ["asc", "desc"];
+  const queryValues = [];
+
   let SQL = `
     SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, COUNT(*) AS comment_count
     FROM articles
     LEFT OUTER JOIN comments 
     ON comments.article_id = articles.article_id
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC`;
+    `;
 
-  return db.query(SQL).then(({ rows }) => {
+  if (topic !== undefined) {
+    queryValues.push(topic);
+    SQL += `WHERE topic = $1 `;
+  }
+
+  SQL += ` 
+    GROUP BY articles.article_id
+    `;
+
+  if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  } else {
+    SQL += `ORDER BY articles.${sort_by} ${order}`;
+  }
+
+  return db.query(SQL, queryValues).then(({ rows }) => {
     return rows;
   });
 };
@@ -86,5 +112,27 @@ exports.postCommentModel = (article_id, newComment) => {
 
   return db.query(SQL, queryValues).then(({ rows }) => {
     return rows[0];
+  });
+};
+
+exports.checkIfTopicExists = (topic) => {
+  if (topic === undefined) {
+    return true;
+  }
+
+  const SQL = `
+    SELECT *
+    FROM topics
+    WHERE slug = $1;`;
+
+  return db.query(SQL, [topic]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `Nothing found for topic: ${topic}`,
+      });
+    } else {
+      return true;
+    }
   });
 };

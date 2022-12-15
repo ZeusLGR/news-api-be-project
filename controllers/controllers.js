@@ -5,6 +5,7 @@ const {
   selectCommentsByArticleID,
   checkIfArticleIDExists,
   postCommentModel,
+  checkIfTopicExists,
 } = require("../models/models");
 
 exports.checkAPI = (req, res) => {
@@ -22,8 +23,13 @@ exports.getTopics = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  selectArticles()
-    .then((articles) => {
+  const { topic, sort_by, order } = req.query;
+  const promises = [
+    selectArticles(topic, sort_by, order),
+    checkIfTopicExists(topic),
+  ];
+  Promise.all(promises)
+    .then(([articles]) => {
       return res.status(200).send({ articles });
     })
     .catch((err) => {
