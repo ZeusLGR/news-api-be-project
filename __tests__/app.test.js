@@ -422,3 +422,11 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("status:204, should respond with no content after the comment related to the given id is deleted", () => {
+    return request(app).delete("/api/comments/3").expect(204);
+  });
+  test.todo("status:404, valid but non-existent comment_id");
+  test.todo("status:400, invalid comment_id")
+});

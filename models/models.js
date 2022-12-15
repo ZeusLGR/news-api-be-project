@@ -30,7 +30,7 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
     ON comments.article_id = articles.article_id
     `;
 
-  if (topic !== undefined) {
+  if (topic) {
     queryValues.push(topic);
     SQL += `WHERE topic = $1 `;
   }
@@ -169,4 +169,12 @@ exports.selectUsers = () => {
   return db.query(SQL).then(({ rows }) => {
     return rows;
   });
+};
+
+exports.deleteCommentModel = (comment_id) => {
+  const SQL = `
+  DELETE FROM comments
+  WHERE comment_id = $1;`;
+
+  return db.query(SQL, [comment_id]).then(() => {});
 };

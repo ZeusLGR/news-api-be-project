@@ -8,6 +8,7 @@ const {
   checkIfTopicExists,
   patchArticleVotesModel,
   selectUsers,
+  deleteCommentModel,
 } = require("../models/models");
 
 exports.checkAPI = (req, res) => {
@@ -96,6 +97,18 @@ exports.getUsers = (req, res, next) => {
   selectUsers()
     .then((users) => {
       return res.status(200).send({ users });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+
+  deleteCommentModel(comment_id)
+    .then(() => {
+      return res.status(204).send({});
     })
     .catch((err) => {
       next(err);
