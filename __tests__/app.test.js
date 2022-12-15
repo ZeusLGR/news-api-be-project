@@ -265,6 +265,7 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
+
 describe("PATCH /api/articles/:article_id", () => {
   test("status:200, should respond with an object containing the updated article after the votes property is incremented correctly", () => {
     const articleUpdate = { inc_votes: 5 };
@@ -329,6 +330,24 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");
+
+describe("GET /api/users", () => {
+  test("status:200, should respond with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });

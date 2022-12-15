@@ -107,5 +107,15 @@ exports.patchArticleVotesModel = (article_id, articleUpdate) => {
       });
     }
     return rows[0];
+    })
+    }
+    
+exports.selectUsers = () => {
+  let SQL = `
+  SELECT * 
+  FROM users`;
+
+  return db.query(SQL).then(({ rows }) => {
+    return rows;
   });
 };
