@@ -196,14 +196,16 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then(({ body: { comment } }) => {
-        expect(comment).toEqual({
-          comment_id: expect.any(Number),
-          body: "cool pugs",
-          article_id: 3,
-          author: "butter_bridge",
-          votes: expect.any(Number),
-          created_at: expect.any(String),
-        });
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "cool pugs",
+            article_id: 3,
+            author: "butter_bridge",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
       });
   });
   test("status:404, valid but non-existent article id", () => {
@@ -272,15 +274,17 @@ describe("PATCH /api/articles/:article_id", () => {
       .send(articleUpdate)
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article).toEqual({
-          article_id: 3,
-          title: "Eight pug gifs that remind me of mitch",
-          topic: "mitch",
-          author: "icellusedkars",
-          body: "some gifs",
-          created_at: expect.any(String),
-          votes: 7,
-        });
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: expect.any(String),
+            votes: 7,
+          })
+        );
       });
   });
   test("status:404, valid but non-existent article id", () => {
