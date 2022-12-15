@@ -264,14 +264,16 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then(({ body: { comment } }) => {
-        expect(comment).toEqual({
-          comment_id: expect.any(Number),
-          body: "cool pugs",
-          article_id: 3,
-          author: "butter_bridge",
-          votes: expect.any(Number),
-          created_at: expect.any(String),
-        });
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "cool pugs",
+            article_id: 3,
+            author: "butter_bridge",
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
       });
   });
   test("status:404, valid but non-existent article id", () => {
@@ -327,6 +329,95 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("status:200, should respond with an object containing the updated article after the votes property is incremented correctly", () => {
+    const articleUpdate = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/articles/3")
+      .send(articleUpdate)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: expect.any(String),
+            votes: 7,
+          })
+        );
+      });
+  });
+  test("status:404, valid but non-existent article id", () => {
+    const articleUpdate = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/articles/9000")
+      .send(articleUpdate)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Nothing found for article_id 9000");
+      });
+  });
+  test("status:400, invalid article id", () => {
+    const articleUpdate = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/articles/notAnID")
+      .send(articleUpdate)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+  test("status:400, missing key from user input", () => {
+    const articleUpdate = {};
+
+    return request(app)
+      .patch("/api/articles/3")
+      .send(articleUpdate)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+  test("status:400, invalid value on key in user input", () => {
+    const articleUpdate = { inc_votes: "five" };
+
+    return request(app)
+      .patch("/api/articles/3")
+      .send(articleUpdate)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("status:200, should respond with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });

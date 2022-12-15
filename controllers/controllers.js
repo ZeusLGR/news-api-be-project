@@ -6,6 +6,8 @@ const {
   checkIfArticleIDExists,
   postCommentModel,
   checkIfTopicExists,
+  patchArticleVotesModel,
+  selectUsers,
 } = require("../models/models");
 
 exports.checkAPI = (req, res) => {
@@ -71,6 +73,29 @@ exports.postComment = (req, res, next) => {
   postCommentModel(article_id, newComment)
     .then((comment) => {
       return res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchArticleVotes = (req, res, next) => {
+  const { article_id } = req.params;
+  const articleUpdate = req.body;
+
+  patchArticleVotesModel(article_id, articleUpdate)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      return res.status(200).send({ users });
     })
     .catch((err) => {
       next(err);

@@ -21,7 +21,7 @@ module.exports = [
     author: "icellusedkars",
     body: "some gifs",
     created_at: 1604394720000,
-    votes: 0,
+    votes: 2,
   },
   {
     title: "Student SUES Mitch!",
