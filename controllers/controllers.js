@@ -5,6 +5,7 @@ const {
   selectCommentsByArticleID,
   checkIfArticleIDExists,
   postCommentModel,
+  selectUsers,
 } = require("../models/models");
 
 exports.checkAPI = (req, res) => {
@@ -65,6 +66,16 @@ exports.postComment = (req, res, next) => {
   postCommentModel(article_id, newComment)
     .then((comment) => {
       return res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      return res.status(200).send({ users });
     })
     .catch((err) => {
       next(err);
