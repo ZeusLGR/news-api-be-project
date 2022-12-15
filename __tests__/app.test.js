@@ -54,7 +54,7 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("status:200, responds with an array of article objects", () => {
+  test("status:200, responds with an array of all article objects, by default", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -77,7 +77,7 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("status:200, articles array should be sorted by the created_at property, in descending order", () => {
+  test("status:200, articles array should be sorted by the created_at property, in descending order, by default", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -86,6 +86,18 @@ describe("GET /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test.todo(
+    "status:200, should accept a 'topic' query which filters the articles by the value specified"
+  );
+  test.todo("Invalid topic query?? Topic not found (return 404 or empty array)?? ")
+  test.todo(
+    "status:200, should accept a 'sort_by' query which sorts the articles by any valid column"
+  );
+  test.todo("status:400. invalid sort query")
+  test.todo(
+    "status: 200, should accept an 'order' query which can be set to asc or desc for ascending or descending"
+  );
+  test.todo("status:400, invalid order query")
 });
 
 describe("GET /api/articles/:article_id", () => {
