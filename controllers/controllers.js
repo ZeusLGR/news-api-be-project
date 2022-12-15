@@ -80,6 +80,12 @@ exports.patchArticleVotes = (req, res, next) => {
   patchArticleVotesModel(article_id, articleUpdate)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 exports.getUsers = (req, res, next) => {
   selectUsers()
     .then((users) => {
