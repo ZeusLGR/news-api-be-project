@@ -31,15 +31,13 @@ exports.selectArticleByID = (article_id) => {
     WHERE article_id = $1;`;
 
   return db.query(SQL, [article_id]).then(({ rows }) => {
-    const article = rows[0];
-
-    if (!article) {
+    if (rows.length === 0) {
       return Promise.reject({
         status: 404,
         msg: `No article found for article_id: ${article_id}`,
       });
     }
-    return article;
+    return rows[0];
   });
 };
 
@@ -89,6 +87,29 @@ exports.postCommentModel = (article_id, newComment) => {
   });
 };
 
+exports.patchArticleVotesModel = (article_id, articleUpdate) => {
+  const { inc_votes } = articleUpdate;
+
+  const queryValues = [inc_votes, article_id];
+
+  let SQL = `
+  UPDATE articles 
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *;
+  `;
+
+  return db.query(SQL, queryValues).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `Nothing found for article_id ${article_id}`,
+      });
+    }
+    return rows[0];
+    })
+    }
+    
 exports.selectUsers = () => {
   let SQL = `
   SELECT * 

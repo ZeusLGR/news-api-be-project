@@ -5,6 +5,7 @@ const {
   selectCommentsByArticleID,
   checkIfArticleIDExists,
   postCommentModel,
+  patchArticleVotesModel,
   selectUsers,
 } = require("../models/models");
 
@@ -72,6 +73,13 @@ exports.postComment = (req, res, next) => {
     });
 };
 
+exports.patchArticleVotes = (req, res, next) => {
+  const { article_id } = req.params;
+  const articleUpdate = req.body;
+
+  patchArticleVotesModel(article_id, articleUpdate)
+    .then((article) => {
+      res.status(200).send({ article });
 exports.getUsers = (req, res, next) => {
   selectUsers()
     .then((users) => {
