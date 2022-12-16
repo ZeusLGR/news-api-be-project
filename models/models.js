@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const fs = require("fs/promises");
 
 exports.selectTopics = () => {
   let SQL = `
@@ -169,4 +170,13 @@ exports.selectUsers = () => {
   return db.query(SQL).then(({ rows }) => {
     return rows;
   });
+};
+
+exports.displayEndpoints = () => {
+  return fs
+    .readFile(`${__dirname}/endpoints.json`, "utf-8")
+    .then((endpoints) => {
+      const parsedEndpoints = JSON.parse(endpoints);
+      return parsedEndpoints;
+    });
 };

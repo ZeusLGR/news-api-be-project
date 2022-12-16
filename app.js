@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  checkAPI,
+  checkEndpoints,
   getTopics,
   getArticles,
   getArticleByID,
@@ -8,7 +8,6 @@ const {
   postComment,
   patchArticleVotes,
   getUsers,
-
 } = require("./controllers/controllers");
 const {
   routeNotFound,
@@ -21,7 +20,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/api", checkAPI);
+app.get("/api", checkEndpoints);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);
