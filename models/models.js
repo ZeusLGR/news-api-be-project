@@ -129,9 +129,9 @@ exports.postCommentModel = (article_id, newComment) => {
   const queryValues = [body, article_id, username];
 
   let SQL = `
-  INSERT INTO comments (body, article_id, author) 
-  VALUES ($1, $2, $3) 
-  RETURNING *;`;
+    INSERT INTO comments (body, article_id, author) 
+    VALUES ($1, $2, $3) 
+    RETURNING *;`;
 
   return db.query(SQL, queryValues).then(({ rows }) => {
     return rows[0];
@@ -144,11 +144,10 @@ exports.patchArticleVotesModel = (article_id, articleUpdate) => {
   const queryValues = [inc_votes, article_id];
 
   let SQL = `
-  UPDATE articles 
-  SET votes = votes + $1
-  WHERE article_id = $2
-  RETURNING *;
-  `;
+    UPDATE articles 
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *;`;
 
   return db.query(SQL, queryValues).then(({ rows }) => {
     if (rows.length === 0) {
@@ -163,8 +162,8 @@ exports.patchArticleVotesModel = (article_id, articleUpdate) => {
 
 exports.selectUsers = () => {
   let SQL = `
-  SELECT * 
-  FROM users`;
+    SELECT * 
+    FROM users`;
 
   return db.query(SQL).then(({ rows }) => {
     return rows;
@@ -173,8 +172,26 @@ exports.selectUsers = () => {
 
 exports.deleteCommentModel = (comment_id) => {
   const SQL = `
-  DELETE FROM comments
-  WHERE comment_id = $1;`;
+    DELETE FROM comments
+    WHERE comment_id = $1;`;
 
   return db.query(SQL, [comment_id]).then(() => {});
+};
+
+exports.checkCommentExists = (comment_id) => {
+  const SQL = `
+    SELECT * 
+    FROM comments
+    WHERE comment_id = $1;`;
+
+  return db.query(SQL, [comment_id]).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `No comment found for comment_id: ${comment_id}`,
+      });
+    } else {
+      return true;
+    }
+  });
 };

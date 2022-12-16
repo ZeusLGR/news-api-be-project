@@ -9,6 +9,7 @@ const {
   patchArticleVotesModel,
   selectUsers,
   deleteCommentModel,
+  checkCommentExists,
 } = require("../models/models");
 
 exports.checkAPI = (req, res) => {
@@ -105,8 +106,11 @@ exports.getUsers = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
-
-  deleteCommentModel(comment_id)
+  const promises = [
+    checkCommentExists(comment_id),
+    deleteCommentModel(comment_id),
+  ];
+  Promise.all(promises)
     .then(() => {
       return res.status(204).send({});
     })
