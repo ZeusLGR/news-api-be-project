@@ -52,7 +52,7 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
 };
 
 exports.checkIfTopicExists = (topic) => {
-  if (topic === undefined) {
+  if (!topic) {
     return true;
   }
 
