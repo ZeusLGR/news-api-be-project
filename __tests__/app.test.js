@@ -422,3 +422,37 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("status:204, should respond with no content after the comment related to the given comment_id is deleted", () => {
+    return request(app)
+      .delete("/api/comments/3")
+      .expect(204)
+      .then(() => {
+        let SQL = `
+          SELECT * 
+          FROM comments
+          WHERE comment_id = $1;`;
+
+        return db.query(SQL, [3]).then(({ rowCount }) => {
+          expect(rowCount).toBe(0);
+        });
+      });
+  });
+  test("status:404, valid but non-existent comment_id", () => {
+    return request(app)
+      .delete("/api/comments/9000")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("No comment found for comment_id: 9000");
+      });
+  });
+  test("status:400, invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/three")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
