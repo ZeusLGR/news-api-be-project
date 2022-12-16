@@ -9,6 +9,8 @@ const {
   checkIfTopicExists,
   patchArticleVotesModel,
   selectUsers,
+  deleteCommentModel,
+  checkCommentExists,
 } = require("../models/models");
 
 exports.checkEndpoints = (req, res) => {
@@ -99,6 +101,21 @@ exports.getUsers = (req, res, next) => {
   selectUsers()
     .then((users) => {
       return res.status(200).send({ users });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  const promises = [
+    checkCommentExists(comment_id),
+    deleteCommentModel(comment_id),
+  ];
+  Promise.all(promises)
+    .then(() => {
+      return res.status(204).send({});
     })
     .catch((err) => {
       next(err);
