@@ -171,7 +171,6 @@ exports.selectUsers = () => {
   });
 };
 
-
 exports.displayEndpoints = () => {
   return fs
     .readFile(`${__dirname}/endpoints.json`, "utf-8")
@@ -179,6 +178,7 @@ exports.displayEndpoints = () => {
       const parsedEndpoints = JSON.parse(endpoints);
       return parsedEndpoints;
     });
+};
 
 exports.deleteCommentModel = (comment_id) => {
   const SQL = `

@@ -12,7 +12,7 @@ afterAll(() => {
 });
 
 describe("GET /api", () => {
-  test.only("should respond with JSON describing all the available endpoints on this API", () => {
+  test("should respond with JSON describing all the available endpoints on this API", () => {
     return request(app)
       .get(`/api`)
       .expect(200)
@@ -22,6 +22,12 @@ describe("GET /api", () => {
             "GET /api": expect.any(Object),
             "GET /api/topics": expect.any(Object),
             "GET /api/articles": expect.any(Object),
+            "GET /api/articles/:article_id": expect.any(Object),
+            "GET /api/articles/:article_id/comments": expect.any(Object),
+            "GET /api/users": expect.any(Object),
+            "POST /api/articles/:article_id/comments": expect.any(Object),
+            "PATCH /api/articles/:article_id": expect.any(Object),
+            "DELETE /api/comments/:comment_id": expect.any(Object),
           })
         );
       });
@@ -206,8 +212,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     return request(app)
       .get("/api/articles/9/comments")
       .expect(200)
-      .then(({ body }) => {
-        const { comments } = body;
+      .then(({ body: { comments } }) => {
         expect(comments).toHaveLength(2);
         comments.forEach((comment) => {
           expect(comment).toEqual(
@@ -414,7 +419,6 @@ describe("GET /api/users", () => {
       .get("/api/users")
       .expect(200)
       .then(({ body: { users } }) => {
-        expect(users).toBeInstanceOf(Array);
         expect(users).toHaveLength(4);
         users.forEach((user) => {
           expect(user).toEqual(
