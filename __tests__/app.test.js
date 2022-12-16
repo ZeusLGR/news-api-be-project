@@ -12,12 +12,18 @@ afterAll(() => {
 });
 
 describe("GET /api", () => {
-  test("should return an object containing a message key", () => {
+  test.only("should respond with JSON describing all the available endpoints on this API", () => {
     return request(app)
       .get(`/api`)
       .expect(200)
-      .then((response) => {
-        expect(response.body).toMatchObject({ msg: "all ok" });
+      .then(({ body: { endpoints } }) => {
+        expect(endpoints).toEqual(
+          expect.objectContaining({
+            "GET /api": expect.any(Object),
+            "GET /api/topics": expect.any(Object),
+            "GET /api/articles": expect.any(Object),
+          })
+        );
       });
   });
 });

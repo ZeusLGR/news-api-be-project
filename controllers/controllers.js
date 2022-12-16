@@ -1,4 +1,5 @@
 const {
+  displayEndpoints,
   selectTopics,
   selectArticles,
   selectArticleByID,
@@ -12,8 +13,10 @@ const {
   checkCommentExists,
 } = require("../models/models");
 
-exports.checkAPI = (req, res) => {
-  res.status(200).send({ msg: "all ok" });
+exports.checkEndpoints = (req, res) => {
+  displayEndpoints().then((endpoints) => {
+    res.status(200).send({ endpoints });
+  });
 };
 
 exports.getTopics = (req, res, next) => {
