@@ -42,6 +42,8 @@ exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
 
   if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
     return Promise.reject({ status: 400, msg: "Bad request" });
+  } else if (sort_by === "comment_count") {
+    SQL += `ORDER BY comment_count ${order}`;
   } else {
     SQL += `ORDER BY articles.${sort_by} ${order}`;
   }
