@@ -10,7 +10,7 @@ https://nc-news-9duf.onrender.com
 
 To build an API for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
 
-This database is PSQL, and we will interact with it using [node-postgres](https://node-postgres.com/).
+The database is PSQL, and we will interact with it using [node-postgres](https://node-postgres.com/).
 
 Versions Node.js "v19.0.0" and Postgres "^8.7.3" are needed to run this repo.
 
@@ -22,7 +22,7 @@ Versions Node.js "v19.0.0" and Postgres "^8.7.3" are needed to run this repo.
 
 - Open your command line and create a new directory for where you wish to hold your repo clone.
 
-- Use the _'git clone'_ command followed by the the URL to clone this repo into your directory.
+- Make sure you cd into your new directory then use the _'git clone'_ command followed by the URL to clone this repo into your directory.
 
 
 
